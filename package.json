@@ -1,7 +1,7 @@
 {
   "name": "savoy",
   "version": "0.1.0",
-  "description": "A super-tiny library of functions for synchronous/asynchronous JavaScript.",
+  "description": "Higher-order functions (each/map/filter/fold) and functions for flow control (parallel/waterfall) in about 0.5 KB.",
   "author": "Lim Yuan Qing",
   "license": "MIT",
   "repository": {

@@ -6,7 +6,7 @@
   "authors": [
     "Lim Yuan Qing <hello@yuanqing.sg>"
   ],
-  "description": "A super-tiny library of functions for synchronous/asynchronous JavaScript.",
+  "description": "Higher-order functions (each/map/filter/fold) and functions for flow control (parallel/waterfall) in about 0.5 KB.",
   "license": "MIT",
   "ignore": [
     "**/.*",
