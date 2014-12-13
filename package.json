@@ -1,0 +1,43 @@
+{
+  "name": "savoy",
+  "version": "0.1.0",
+  "description": "A super-tiny library of functions for synchronous/asynchronous JavaScript.",
+  "author": "Lim Yuan Qing",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yuanqing/savoy.git"
+  },
+  "main": "savoy.js",
+  "devDependencies": {
+    "istanbul": "^0.3.2",
+    "jasmine-reporters": "^1.0.1",
+    "jshint": "^2.5.10",
+    "jshint-stylish": "^1.0.0",
+    "minijasminenode2": "^1.0.0",
+    "uglify-js": "^2.4.15"
+  },
+  "scripts": {
+    "lint": "node_modules/.bin/jshint --reporter=node_modules/jshint-stylish/stylish.js --verbose savoy.js test/*.spec.js",
+    "test": "rm -rf coverage && node_modules/.bin/istanbul cover -- node_modules/.bin/minijasminenode2 test/*.spec.js --verbose",
+    "dist": "node_modules/.bin/uglifyjs savoy.js --mangle --output savoy.min.js",
+    "build": "npm run lint && npm test && npm run bench && npm run dist"
+  },
+  "keywords": [
+    "async",
+    "asynchronous",
+    "each",
+    "fold",
+    "function",
+    "functional",
+    "higher-order",
+    "map",
+    "parallel",
+    "reduce",
+    "sequential",
+    "serial",
+    "series",
+    "synchronous",
+    "waterfall"
+  ]
+}
