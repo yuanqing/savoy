@@ -107,4 +107,4 @@
     });
   };
 
-})(typeof exports == 'undefined' ? this.s : exports);
+})(typeof exports == 'undefined' ? this.savoy : exports);
