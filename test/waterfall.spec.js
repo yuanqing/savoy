@@ -3,7 +3,7 @@
 
 var waterfall = require('../savoy.js').waterfall;
 
-describe('parallel', function() {
+describe('waterfall', function() {
 
   describe('array', function() {
 
