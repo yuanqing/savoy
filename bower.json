@@ -1,12 +1,12 @@
 {
   "name": "savoy",
   "main": "savoy.min.js",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/yuanqing/savoy",
   "authors": [
     "Lim Yuan Qing <hello@yuanqing.sg>"
   ],
-  "description": "Higher-order functions (each/map/filter/fold) and functions for flow control (parallel/waterfall) in about 0.5 KB.",
+  "description": "Higher-order functions (synchronous and asynchronous each/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.",
   "license": "MIT",
   "ignore": [
     "**/.*",
