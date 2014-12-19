@@ -28,18 +28,18 @@ describe('waterfall', function() {
         function(cb, arg) {
           setTimeout(function() {
             args.push(arg);
-            cb(null, 2);
+            cb(null, 2, 3);
           }, 10);
         },
-        function(cb, arg) {
+        function(cb, arg1, arg2) {
           setTimeout(function() {
-            args.push(arg);
-            cb(null, 3);
+            args.push([arg1, arg2]);
+            cb(null, 4);
           }, 30);
         }
       ]);
       jasmine.clock().tick(1000);
-      expect(args).toEqual([undefined, 1, 2]);
+      expect(args).toEqual([undefined, 1, [2, 3]]);
       jasmine.clock().uninstall();
     });
 
@@ -55,19 +55,19 @@ describe('waterfall', function() {
         function(cb, arg) {
           setTimeout(function() {
             args.push(arg);
-            cb(null, 2);
+            cb(null, 2, 3);
           }, 10);
         },
-        function(cb, arg) {
+        function(cb, arg1, arg2) {
           setTimeout(function() {
-            args.push(arg);
-            cb(null, 3);
+            args.push([arg1, arg2]);
+            cb(null, 4);
           }, 30);
         }
-      ], function(err, lastArg) {
+      ], function(err, arg) {
         expect(err).toBeFalsy();
-        expect(lastArg).toBe(3);
-        expect(args).toEqual([undefined, 1, 2]);
+        expect(arg).toBe(4);
+        expect(args).toEqual([undefined, 1, [2, 3]]);
         done();
       });
     });
@@ -98,7 +98,7 @@ describe('waterfall', function() {
       jasmine.clock().uninstall();
     });
 
-  }); // parallel array
+  }); // waterfall array
 
   describe('object', function() {
 
@@ -123,18 +123,18 @@ describe('waterfall', function() {
         b: function(cb, arg) {
           setTimeout(function() {
             args.push(arg);
-            cb(null, 2);
+            cb(null, 2, 3);
           }, 10);
         },
-        c: function(cb, arg) {
+        c: function(cb, arg1, arg2) {
           setTimeout(function() {
-            args.push(arg);
-            cb(null, 3);
+            args.push([arg1, arg2]);
+            cb(null, 4);
           }, 30);
         }
       });
       jasmine.clock().tick(1000);
-      expect(args).toEqual([undefined, 1, 2]);
+      expect(args).toEqual([undefined, 1, [2, 3]]);
       jasmine.clock().uninstall();
     });
 
@@ -150,19 +150,19 @@ describe('waterfall', function() {
         b: function(cb, arg) {
           setTimeout(function() {
             args.push(arg);
-            cb(null, 2);
+            cb(null, 2, 3);
           }, 10);
         },
-        c: function(cb, arg) {
+        c: function(cb, arg1, arg2) {
           setTimeout(function() {
-            args.push(arg);
-            cb(null, 3);
+            args.push([arg1, arg2]);
+            cb(null, 4);
           }, 30);
         }
-      }, function(err, lastArg) {
+      }, function(err, arg) {
         expect(err).toBeFalsy();
-        expect(lastArg).toBe(3);
-        expect(args).toEqual([undefined, 1, 2]);
+        expect(arg).toBe(4);
+        expect(args).toEqual([undefined, 1, [2, 3]]);
         done();
       });
     });
@@ -193,6 +193,6 @@ describe('waterfall', function() {
       jasmine.clock().uninstall();
     });
 
-  }); // parallel object
+  }); // waterfall object
 
-}); // parallel
+}); // waterfall

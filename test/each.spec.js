@@ -33,6 +33,22 @@ describe('each', function() {
         expect(arr).toEqual([1, 2, 3]);
       });
 
+      it('stops iterating when `fn` returns false', function() {
+        var arr = [1, 2, 3];
+        var calls = [];
+        each(arr, function(val, i, arr) {
+          calls.push([val, i, arr]);
+          if (val === 2) {
+            return false;
+          }
+        });
+        expect(calls).toEqual([
+          [1, 0, arr],
+          [2, 1, arr],
+        ]);
+        expect(arr).toEqual([1, 2, 3]);
+      });
+
     }); // each sync array
 
     describe('object', function() {
@@ -57,6 +73,22 @@ describe('each', function() {
           [1, 'a', obj],
           [2, 'b', obj],
           [3, 'c', obj]
+        ]);
+        expect(obj).toEqual({ a: 1, b: 2, c: 3 });
+      });
+
+      it('stops iterating when `fn` returns false', function() {
+        var obj = { a: 1, b: 2, c: 3 };
+        var calls = [];
+        each(obj, function(val, key, obj) {
+          calls.push([val, key, obj]);
+          if (val === 2) {
+            return false;
+          }
+        });
+        expect(calls).toEqual([
+          [1, 'a', obj],
+          [2, 'b', obj],
         ]);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
       });
@@ -112,7 +144,8 @@ describe('each', function() {
           }, duration[i]);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[2]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(2);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -164,7 +197,8 @@ describe('each', function() {
           }, duration[key]);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[2]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(2);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });

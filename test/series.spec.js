@@ -1,14 +1,14 @@
 /* globals jasmine, describe, it, expect */
 'use strict';
 
-var parallel = require('../savoy.js').parallel;
+var series = require('../savoy.js').series;
 
-describe('parallel', function() {
+describe('series', function() {
 
   describe('array', function() {
 
     it('empty', function(done) {
-      parallel([], function(err, results) {
+      series([], function(err, results) {
         expect(err).toBeFalsy();
         expect(results).toEqual([]);
         done();
@@ -18,7 +18,7 @@ describe('parallel', function() {
     it('no `cb`, iterates through', function() {
       jasmine.clock().install();
       var calls = [];
-      parallel([
+      series([
         function(cb) {
           setTimeout(function() {
             calls.push(1);
@@ -39,13 +39,13 @@ describe('parallel', function() {
         }
       ]);
       jasmine.clock().tick(1000);
-      expect(calls).toEqual([2, 1, 3]);
+      expect(calls).toEqual([1, 2, 3]);
       jasmine.clock().uninstall();
     });
 
     it('with `cb`, iterates through', function(done) {
       var calls = [];
-      parallel([
+      series([
         function(cb) {
           setTimeout(function() {
             calls.push(1);
@@ -67,7 +67,7 @@ describe('parallel', function() {
       ], function(err, results) {
         expect(err).toBeFalsy();
         expect(results).toEqual([1, 2, 3]);
-        expect(calls).toEqual([2, 1, 3]);
+        expect(calls).toEqual([1, 2, 3]);
         done();
       });
     });
@@ -75,7 +75,7 @@ describe('parallel', function() {
     it('on error, calls `cb` exactly once', function() {
       jasmine.clock().install();
       var cb = jasmine.createSpy();
-      parallel([
+      series([
         function(cb) {
           setTimeout(function() {
             cb(1);
@@ -94,16 +94,16 @@ describe('parallel', function() {
       ], cb);
       jasmine.clock().tick(1000);
       expect(cb.calls.count()).toBe(1);
-      expect(cb.calls.argsFor(0)[0]).toEqual(2);
+      expect(cb.calls.argsFor(0)[0]).toEqual(1);
       jasmine.clock().uninstall();
     });
 
-  }); // parallel array
+  }); // series array
 
   describe('object', function() {
 
     it('empty', function(done) {
-      parallel({}, function(err, results) {
+      series({}, function(err, results) {
         expect(err).toBeFalsy();
         expect(results).toEqual({});
         done();
@@ -113,7 +113,7 @@ describe('parallel', function() {
     it('no `cb`, iterates through', function() {
       jasmine.clock().install();
       var calls = [];
-      parallel({
+      series({
         a: function(cb) {
           setTimeout(function() {
             calls.push(1);
@@ -134,13 +134,13 @@ describe('parallel', function() {
         }
       });
       jasmine.clock().tick(1000);
-      expect(calls).toEqual([2, 1, 3]);
+      expect(calls).toEqual([1, 2, 3]);
       jasmine.clock().uninstall();
     });
 
     it('with `cb`, iterates through', function(done) {
       var calls = [];
-      parallel({
+      series({
         a: function(cb) {
           setTimeout(function() {
             calls.push(1);
@@ -162,7 +162,7 @@ describe('parallel', function() {
       }, function(err, results) {
         expect(err).toBeFalsy();
         expect(results).toEqual({ a: 1, b: 2, c: 3 });
-        expect(calls).toEqual([2, 1, 3]);
+        expect(calls).toEqual([1, 2, 3]);
         done();
       });
     });
@@ -170,7 +170,7 @@ describe('parallel', function() {
     it('on error, calls `cb` exactly once', function() {
       jasmine.clock().install();
       var cb = jasmine.createSpy();
-      parallel({
+      series({
         a: function(cb) {
           setTimeout(function() {
             cb(1);
@@ -189,10 +189,10 @@ describe('parallel', function() {
       }, cb);
       jasmine.clock().tick(1000);
       expect(cb.calls.count()).toBe(1);
-      expect(cb.calls.argsFor(0)[0]).toEqual(2);
+      expect(cb.calls.argsFor(0)[0]).toEqual(1);
       jasmine.clock().uninstall();
     });
 
-  }); // parallel object
+  }); // series object
 
-}); // parallel
+}); // series

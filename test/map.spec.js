@@ -126,7 +126,8 @@ describe('map', function() {
           }, duration[i]);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[2]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(2);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -184,7 +185,8 @@ describe('map', function() {
           }, duration[key]);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[2]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(2);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });

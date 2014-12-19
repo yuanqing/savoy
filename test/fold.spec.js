@@ -125,7 +125,8 @@ describe('fold', function() {
           }, 0);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[1]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(1);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -182,7 +183,8 @@ describe('fold', function() {
           }, 0);
         }, cb);
         jasmine.clock().tick(1000);
-        expect(cb.calls.allArgs()).toEqual([[1]]);
+        expect(cb.calls.count()).toEqual(1);
+        expect(cb.calls.argsFor(0)[0]).toEqual(1);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });
