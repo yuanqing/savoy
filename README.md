@@ -244,8 +244,8 @@ savoy.waterfall([
 });
 ```
 
-- Each function in `fns` is called in *parallel*.
-- Arguments (other than the first argument) passed to `cb` by each function in `fns` will be passed on to the next function in `fns`.
+- Each function in `fns` is called in *series*.
+- All other arguments other than the first argument that are passed to `cb` by each function in `fns` will be passed on to the next function in `fns`.
 
 ## Installation
 
