@@ -115,18 +115,18 @@ describe('fold', function() {
         });
       });
 
-      it('on error, calls `cb` exactly once', function() {
+      it('on error, calls `done` exactly once', function() {
         jasmine.clock().install();
-        var cb = jasmine.createSpy();
+        var done = jasmine.createSpy();
         var arr = [1, 2, 3];
         fold(arr, 100, function(cb, acc, val) {
           setTimeout(function() {
             cb(val);
           }, 0);
-        }, cb);
+        }, done);
         jasmine.clock().tick(1000);
-        expect(cb.calls.count()).toEqual(1);
-        expect(cb.calls.argsFor(0)[0]).toEqual(1);
+        expect(done.calls.count()).toEqual(1);
+        expect(done.calls.argsFor(0)[0]).toEqual(1);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -173,18 +173,18 @@ describe('fold', function() {
         });
       });
 
-      it('on error, calls `cb` exactly once', function() {
+      it('on error, calls `done` exactly once', function() {
         jasmine.clock().install();
-        var cb = jasmine.createSpy();
+        var done = jasmine.createSpy();
         var obj = { a: 1, b: 2, c: 3 };
         fold(obj, 100, function(cb, acc, val) {
           setTimeout(function() {
             cb(val);
           }, 0);
-        }, cb);
+        }, done);
         jasmine.clock().tick(1000);
-        expect(cb.calls.count()).toEqual(1);
-        expect(cb.calls.argsFor(0)[0]).toEqual(1);
+        expect(done.calls.count()).toEqual(1);
+        expect(done.calls.argsFor(0)[0]).toEqual(1);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });

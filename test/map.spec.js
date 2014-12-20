@@ -115,19 +115,19 @@ describe('map', function() {
         });
       });
 
-      it('on error, calls `cb` exactly once', function() {
+      it('on error, calls `done` exactly once', function() {
         jasmine.clock().install();
-        var cb = jasmine.createSpy();
+        var done = jasmine.createSpy();
         var arr = [1, 2, 3];
         var duration = [20, 10, 30];
         map(arr, function(cb, val, i) {
           setTimeout(function() {
             cb(val);
           }, duration[i]);
-        }, cb);
+        }, done);
         jasmine.clock().tick(1000);
-        expect(cb.calls.count()).toEqual(1);
-        expect(cb.calls.argsFor(0)[0]).toEqual(2);
+        expect(done.calls.count()).toEqual(1);
+        expect(done.calls.argsFor(0)[0]).toEqual(2);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -174,19 +174,19 @@ describe('map', function() {
         });
       });
 
-      it('on error, calls `cb` exactly once', function() {
+      it('on error, calls `done` exactly once', function() {
         jasmine.clock().install();
-        var cb = jasmine.createSpy();
+        var done = jasmine.createSpy();
         var obj = { a: 1, b: 2, c: 3 };
         var duration = { a: 20, b: 10, c: 30 };
         map(obj, function(cb, val, key) {
           setTimeout(function() {
             cb(val);
           }, duration[key]);
-        }, cb);
+        }, done);
         jasmine.clock().tick(1000);
-        expect(cb.calls.count()).toEqual(1);
-        expect(cb.calls.argsFor(0)[0]).toEqual(2);
+        expect(done.calls.count()).toEqual(1);
+        expect(done.calls.argsFor(0)[0]).toEqual(2);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });

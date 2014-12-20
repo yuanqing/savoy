@@ -15,7 +15,7 @@ describe('parallel', function() {
       });
     });
 
-    it('no `cb`, iterates through', function() {
+    it('no `done`, iterates through', function() {
       jasmine.clock().install();
       var calls = [];
       parallel([
@@ -43,7 +43,7 @@ describe('parallel', function() {
       jasmine.clock().uninstall();
     });
 
-    it('with `cb`, iterates through', function(done) {
+    it('with `done`, iterates through', function(done) {
       var calls = [];
       parallel([
         function(cb) {
@@ -72,9 +72,9 @@ describe('parallel', function() {
       });
     });
 
-    it('on error, calls `cb` exactly once', function() {
+    it('on error, calls `done` exactly once', function() {
       jasmine.clock().install();
-      var cb = jasmine.createSpy();
+      var done = jasmine.createSpy();
       parallel([
         function(cb) {
           setTimeout(function() {
@@ -91,10 +91,10 @@ describe('parallel', function() {
             cb(3);
           }, 30);
         }
-      ], cb);
+      ], done);
       jasmine.clock().tick(1000);
-      expect(cb.calls.count()).toBe(1);
-      expect(cb.calls.argsFor(0)[0]).toEqual(2);
+      expect(done.calls.count()).toBe(1);
+      expect(done.calls.argsFor(0)[0]).toEqual(2);
       jasmine.clock().uninstall();
     });
 
@@ -110,7 +110,7 @@ describe('parallel', function() {
       });
     });
 
-    it('no `cb`, iterates through', function() {
+    it('no `done`, iterates through', function() {
       jasmine.clock().install();
       var calls = [];
       parallel({
@@ -138,7 +138,7 @@ describe('parallel', function() {
       jasmine.clock().uninstall();
     });
 
-    it('with `cb`, iterates through', function(done) {
+    it('with `done`, iterates through', function(done) {
       var calls = [];
       parallel({
         a: function(cb) {
@@ -167,9 +167,9 @@ describe('parallel', function() {
       });
     });
 
-    it('on error, calls `cb` exactly once', function() {
+    it('on error, calls `done` exactly once', function() {
       jasmine.clock().install();
-      var cb = jasmine.createSpy();
+      var done = jasmine.createSpy();
       parallel({
         a: function(cb) {
           setTimeout(function() {
@@ -186,10 +186,10 @@ describe('parallel', function() {
             cb(3);
           }, 30);
         }
-      }, cb);
+      }, done);
       jasmine.clock().tick(1000);
-      expect(cb.calls.count()).toBe(1);
-      expect(cb.calls.argsFor(0)[0]).toEqual(2);
+      expect(done.calls.count()).toBe(1);
+      expect(done.calls.argsFor(0)[0]).toEqual(2);
       jasmine.clock().uninstall();
     });
 
