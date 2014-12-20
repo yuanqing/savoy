@@ -21,67 +21,6 @@
 
   var arrSlice = Array.prototype.slice;
 
-  var asyncSeriesEach = function(collection, fn, cb) {
-    var keys = isArr(collection) ? false : objKeys(collection);
-    var len = (keys || collection).length;
-    var i = 0;
-    var key;
-    var cbWrap = function(err) {
-      if (err) {
-        cb(err);
-        return;
-      }
-      if (++i === len) {
-        cb(null);
-        return;
-      }
-      call();
-    };
-    var call = keys ? function() {
-      key = keys[i];
-      fn(cbWrap, collection[key], key, collection);
-    } : function() {
-      fn(cbWrap, collection[i], i, collection);
-    };
-    if (!len) {
-      cb(null);
-      return;
-    }
-    call();
-  };
-
-  var asyncParallelEach = function(collection, fn, cb) {
-    var keys = isArr(collection) ? false : objKeys(collection);
-    var len = (keys || collection).length;
-    var i = -1;
-    var key;
-    var count = 0;
-    var cbWrap = function(err) {
-      if (err) {
-        cb(err);
-        cb = noop;
-        return;
-      }
-      if (++count === len) {
-        cb(null);
-      }
-    };
-    if (!len) {
-      cb(null);
-      return;
-    }
-    if (keys) {
-      while (++i < len) {
-        key = keys[i];
-        fn(cbWrap, collection[key], key, collection);
-      }
-    } else {
-      while (++i < len) {
-        fn(cbWrap, collection[i], i, collection);
-      }
-    }
-  };
-
   var syncParallelEach = function(collection, fn) {
     var keys = isArr(collection) ? false : objKeys(collection);
     var len = (keys || collection).length;
@@ -103,6 +42,67 @@
     }
   };
 
+  var asyncParallelEach = function(collection, fn, done) {
+    var keys = isArr(collection) ? false : objKeys(collection);
+    var len = (keys || collection).length;
+    var i = -1;
+    var key;
+    var count = 0;
+    var cb = function(err) {
+      if (err) {
+        done(err);
+        done = noop;
+        return;
+      }
+      if (++count === len) {
+        done(null);
+      }
+    };
+    if (!len) {
+      done(null);
+      return;
+    }
+    if (keys) {
+      while (++i < len) {
+        key = keys[i];
+        fn(cb, collection[key], key, collection);
+      }
+    } else {
+      while (++i < len) {
+        fn(cb, collection[i], i, collection);
+      }
+    }
+  };
+
+  var asyncSeriesEach = function(collection, fn, done) {
+    var keys = isArr(collection) ? false : objKeys(collection);
+    var len = (keys || collection).length;
+    var i = 0;
+    var key;
+    var cb = function(err) {
+      if (err) {
+        done(err);
+        return;
+      }
+      if (++i === len) {
+        done(null);
+        return;
+      }
+      call();
+    };
+    var call = keys ? function() {
+      key = keys[i];
+      fn(cb, collection[key], key, collection);
+    } : function() {
+      fn(cb, collection[i], i, collection);
+    };
+    if (!len) {
+      done(null);
+      return;
+    }
+    call();
+  };
+
   var syncMap = function(collection, fn) {
     var result = isArr(collection) ? [] : {};
     syncParallelEach(collection, function(val, key, collection) {
@@ -111,7 +111,7 @@
     return result;
   };
 
-  var asyncMap = function(collection, fn, cb) {
+  var asyncMap = function(collection, fn, done) {
     var result = isArr(collection) ? [] : {};
     asyncParallelEach(collection, function(cb, val, key, collection) {
       fn(function(err, mapVal) {
@@ -119,7 +119,7 @@
         cb(err);
       }, val, key, collection);
     }, function(err) {
-      cb(err, result);
+      done(err, result);
     });
   };
 
@@ -143,7 +143,7 @@
     return result;
   };
 
-  var asyncFilter = function(collection, fn, cb) {
+  var asyncFilter = function(collection, fn, done) {
     var result;
     if (isArr(collection)) {
       result = [];
@@ -155,7 +155,7 @@
           cb(err);
         }, val, i, collection);
       }, function(err) {
-        cb(err, syncMap(result.sort(function(a, b) {
+        done(err, syncMap(result.sort(function(a, b) {
           return a.i - b.i;
         }), function(item) {
           return item.val;
@@ -171,7 +171,7 @@
           cb(err);
         }, val, key, collection);
       }, function(err) {
-        cb(err, result);
+        done(err, result);
       });
     }
   };
@@ -183,44 +183,44 @@
     return acc;
   };
 
-  var asyncFold = function(collection, acc, fn, cb) {
+  var asyncFold = function(collection, acc, fn, done) {
     asyncSeriesEach(collection, function(cb, val, key, collection) {
       fn(function(err, foldVal) {
         acc = foldVal;
         cb(err);
       }, acc, val, key, collection);
     }, function(err) {
-      cb(err, acc);
+      done(err, acc);
     });
   };
 
-  exports.each = function(collection, fn, cb) {
-    return cb ? asyncParallelEach(collection, fn, cb) : syncParallelEach(collection, fn);
+  exports.each = function(collection, fn, done) {
+    return done ? asyncParallelEach(collection, fn, done) : syncParallelEach(collection, fn);
   };
 
-  exports.map = function(collection, fn, cb) {
-    return cb ? asyncMap(collection, fn, cb) : syncMap(collection, fn);
+  exports.map = function(collection, fn, done) {
+    return done ? asyncMap(collection, fn, done) : syncMap(collection, fn);
   };
 
-  exports.filter = function(collection, fn, cb) {
-    return cb ? asyncFilter(collection, fn, cb) : syncFilter(collection, fn);
+  exports.filter = function(collection, fn, done) {
+    return done ? asyncFilter(collection, fn, done) : syncFilter(collection, fn);
   };
 
-  exports.fold = function(collection, acc, fn, cb) {
-    return cb ? asyncFold(collection, acc, fn, cb) : syncFold(collection, acc, fn);
+  exports.fold = function(collection, acc, fn, done) {
+    return done ? asyncFold(collection, acc, fn, done) : syncFold(collection, acc, fn);
   };
 
-  exports.parallel = function(fns, cb) {
+  exports.parallel = function(fns, done) {
     exports.map(fns, function(cb, fn) {
       fn(function(err, val) {
         cb(err, val);
       });
     }, function(err, result) {
-      (cb || noop)(err, result);
+      (done || noop)(err, result);
     });
   };
 
-  exports.series = function(fns, cb) {
+  exports.series = function(fns, done) {
     var result = isArr(fns) ? [] : {};
     asyncSeriesEach(fns, function(cb, fn, key) {
       fn(function(err, val) {
@@ -228,29 +228,29 @@
         cb(err);
       });
     }, function(err) {
-      (cb || noop)(err, result);
+      (done || noop)(err, result);
     });
   };
 
-  exports.waterfall = function(fns, cb) {
+  exports.waterfall = function(fns, done) {
     var keys = isArr(fns) ? false : objKeys(fns);
     var len = (keys || fns).length;
     var i = -1;
-    var cbWrap = function(err) {
+    var cb = function(err) {
       if (err) {
-        cb(err);
+        done(err);
         return;
       }
       if (++i === len) {
-        cb.apply(null, arguments);
+        done.apply(null, arguments);
         return;
       }
       var args = arrSlice.call(arguments);
-      args[0] = cbWrap;
+      args[0] = cb;
       (keys ? fns[keys[i]] : fns[i]).apply(null, args);
     };
-    cb = cb || noop;
-    cbWrap();
+    done = done || noop;
+    cb();
   };
 
 })(typeof exports == 'undefined' ? this.savoy : exports);
