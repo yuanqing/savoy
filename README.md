@@ -3,7 +3,7 @@
 > Higher-order functions (synchronous and asynchronous each/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.
 
 - API is similar to that of the [async](https://github.com/caolan/async) library
-- 2.2 KB [minified](https://github.com/yuanqing/savoy/blob/master/savoy.min.js), or about 0.9 KB minified and gzipped
+- 2.5 KB [minified](https://github.com/yuanqing/savoy/blob/master/savoy.min.js), or about 0.9 KB minified and gzipped
 - [Legible tests](https://github.com/yuanqing/savoy/blob/master/test), with [100% coverage](https://coveralls.io/r/yuanqing/savoy)
 
 ## Why
@@ -65,8 +65,10 @@ savoy.each({ a: 1, b: 2, c: 3 }, function(cb, val, key, obj) {
 });
 ```
 
-- `fn` is called in *parallel* over each item in `collection`.
-- Invoke the `cb` callback in `fn` to signal the end of `fn`. (Note that `cb` is the *first* argument of `fn`.)
+- The asynchronous function `fn` is called in *parallel* over each item in `collection`.
+- Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`.
+- The signature of the `cb` callback is `cb(err)`. If `err` is truthy, the `done` callback is called exactly once with the `err`.
+- When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err`.
 
 ### map
 
@@ -99,9 +101,14 @@ savoy.map([1, 2, 3], function(cb, val, i, arr) {
 });
 ```
 
-- `fn` is called in *parallel* over each item in `collection`.
-- `result` will be of the same type as `collection`, ie. if `collection` was an Object, `result` will also be an Object.
-- Items in `result` will be in the same order as they were in `collection`.
+- The asynchronous function `fn` is called in *parallel* over each item in `collection`.
+- Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`. The signature of the `cb` callback is `cb(err, mapVal)`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `mapVal` &mdash; This is accumulated in the `result` argument of the `done` callback.
+- When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err` and the `result` of the map.
+- Note that if `collection` is an Object:
+  1. `result` will also be an Object.
+  2. Items in `result` may *not* be in the same order as their corresponding items in the original `collection`.
 
 ### filter
 
@@ -134,9 +141,14 @@ savoy.filter({ a: 1, b: 2, c: 3 }, function(cb, val, key, obj) {
 });
 ```
 
-- `fn` is called in *parallel* over each item in `collection`.
-- `result` will be of the same type as `collection`, ie. if `collection` was an Object, `result` will also be an Object.
-- Items in `result` will be in the same relative order as they were in `collection`.
+- The asynchronous function `fn` is called in *parallel* over each item in `collection`.
+- Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`. The signature of the `cb` callback is `cb(err, predicate)`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `predicate` &mdash; If truthy, the current item is added to the `result` argument of the `done` callback.
+- When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err` and the `result` of the filter.
+- Note that if `collection` is an Object:
+  1. `result` will also be an Object.
+  2. Items in `result` may *not* be in the same relative order as they were in `collection`.
 
 ### fold
 
@@ -169,11 +181,15 @@ savoy.fold([1, 2, 3], 0, function(cb, acc, val, i, arr) {
 });
 ```
 
-- `fn` is called in *series* for each item in `collection`.
+- The asynchronous function `fn` is called in *series* over each item in `collection`.
+- Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`. The signature of the `cb` callback is `cb(err, foldVal)`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `foldVal` &mdash; This is the value for `acc` that is passed to the next iteration of `fn`.
+- When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err` and the `result` of the fold.
 
 ### parallel
 
-**savoy.parallel(fns, done)**
+**savoy.parallel(fns [, done])**
 
 ```js
 savoy.parallel([
@@ -193,11 +209,14 @@ savoy.parallel([
 ```
 
 - Each function in `fns` is called in *parallel*.
-- The second argument passed to `cb` by each function is collected in `result`.
+- Invoke the `cb` callback in each function to signal the end of the function. The signature of the `cb` callback is `cb(err, val)`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `val` &mdash; This is accumulated in the `result` argument of the `done` callback.
+- When every function in `fns` has completed execution, the `done` callback is called exactly once with a falsy `err` and the `result` of each function.
 
 ### series
 
-**savoy.series(fns, done)**
+**savoy.series(fns [, done])**
 
 ```js
 savoy.series({
@@ -217,11 +236,14 @@ savoy.series({
 ```
 
 - Each function in `fns` is called in *series*.
-- The second argument passed to `cb` by each function is collected in `result`.
+- Invoke the `cb` callback in each function to signal the end of the function. The signature of the `cb` callback is `cb(err, val)`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `val` &mdash; This is accumulated in the `result` argument of the `done` callback.
+- When the entire series of functions has completed execution, the `done` callback is called exactly once with a falsy `err` and the `result` of each function.
 
 ### waterfall
 
-**savoy.waterfall(fns, done)**
+**savoy.waterfall(fns [, done])**
 
 ```js
 savoy.waterfall([
@@ -233,19 +255,22 @@ savoy.waterfall([
     //=> 'a', 'b'
     cb(null, 'c');
   },
-  function(cb, args) {
-    console.log(args);
+  function(cb, arg) {
+    console.log(arg);
     //=> 'c'
-    cb(null, 'd');
+    cb(null, 'd', 'e');
   }
-], function(err, arg) {
-  console.log(err, arg);
-  //=> null, 'd'
+], function(err, arg1, arg2) {
+  console.log(err, arg1, arg2);
+  //=> null, 'd', 'e'
 });
 ```
 
 - Each function in `fns` is called in *series*.
-- All other arguments other than the first argument that are passed to `cb` by each function in `fns` will be passed on to the next function in `fns`.
+- Invoke the `cb` callback in each function to signal the end of the function. The signature of the `cb` callback is `cb(err [, arg1, arg2, ...])`:
+  1. `err` &mdash; If truthy, the `done` callback is called exactly once with the `err`.
+  2. `arg1, arg2, ...` &mdash; Arguments that are passed on to the next function in `fns`.
+- When the entire series of functions has completed execution, the `done` callback is called exactly once with a falsy `err` and arguments from the last function in `fns`.
 
 ## Installation
 
