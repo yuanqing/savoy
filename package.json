@@ -1,6 +1,6 @@
 {
   "name": "savoy",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Higher-order functions (synchronous and asynchronous each/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.",
   "author": "Lim Yuan Qing",
   "license": "MIT",
