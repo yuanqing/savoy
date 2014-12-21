@@ -11,7 +11,6 @@
   "main": "savoy.js",
   "devDependencies": {
     "istanbul": "^0.3.2",
-    "jasmine-reporters": "^1.0.1",
     "jshint": "^2.5.10",
     "jshint-stylish": "^1.0.0",
     "minijasminenode2": "^1.0.0",
@@ -21,16 +20,20 @@
     "lint": "node_modules/.bin/jshint --reporter=node_modules/jshint-stylish/stylish.js --verbose savoy.js test/*.spec.js",
     "test": "rm -rf coverage && node_modules/.bin/istanbul cover -- node_modules/.bin/minijasminenode2 test/*.spec.js --verbose",
     "dist": "node_modules/.bin/uglifyjs savoy.js --mangle --output savoy.min.js",
-    "build": "npm run lint && npm test && npm run bench && npm run dist"
+    "build": "npm run lint && npm test && npm run dist"
   },
   "keywords": [
+    "array",
     "async",
     "asynchronous",
     "each",
+    "filter",
+    "flow",
     "fold",
     "function",
     "functional",
     "higher-order",
+    "loop",
     "map",
     "parallel",
     "reduce",
