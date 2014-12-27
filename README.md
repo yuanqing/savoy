@@ -1,22 +1,26 @@
 # Savoy.js [![npm Version](http://img.shields.io/npm/v/savoy.svg?style=flat)](https://www.npmjs.org/package/savoy) [![Build Status](https://img.shields.io/travis/yuanqing/savoy.svg?style=flat)](https://travis-ci.org/yuanqing/savoy) [![Coverage Status](https://img.shields.io/coveralls/yuanqing/savoy.svg?style=flat)](https://coveralls.io/r/yuanqing/savoy)
 
-> Higher-order functions (synchronous and asynchronous each/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.
+> Higher-order functions (synchronous and asynchronous each/eachSeries/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.
 
-- API is similar to that of the [async](https://github.com/caolan/async) library
+- [API](#api) is similar (not identical) to that of the [Async](https://github.com/caolan/async) library
 - 2.5 KB [minified](https://github.com/yuanqing/savoy/blob/master/savoy.min.js), or about 0.9 KB minified and gzipped
 - [Legible tests](https://github.com/yuanqing/savoy/blob/master/test), with [100% coverage](https://coveralls.io/r/yuanqing/savoy)
 
 ## Why
 
-Mainly [this](https://github.com/timoxley/best-practices#reinvent-the-wheel):
+Savoy&rsquo;s higher-order functions differ from Async&rsquo;s in the following ways:
+- The signature of the `fn` iterator is different. The `cb` callback (invoked to signal the end of each iteration of `fn`) is the *first* argument of `fn`. In addition, `fn` is also passed the index/key of the current element, and the original `collection` itself.
+- If passed is an Object, `map` and `filter` will return an Object. (If passed an Object, Async&rsquo;s `map` and `filter` will return an Array.)
 
+Also, mainly [this](https://github.com/timoxley/best-practices#reinvent-the-wheel):
 > Inventing your own wheels gives you a deep appreciation and understanding of how wheels work and what makes a good one.
 
 ## API
 
-In all of the method signatures below, `collection` (in each/map/filter/fold) and `fns` (in parallel/series/waterfall) can either be an Array or an Object literal.
+In all of the method signatures below, `collection` (in each/eachSeries/map/filter/fold) and `fns` (in parallel/series/waterfall) can either be an Array or an Object literal.
 
 - [`each`](#each)
+- [`eachSeries`](#eachSeries)
 - [`map`](#map)
 - [`filter`](#filter)
 - [`fold`](#fold)
@@ -68,6 +72,32 @@ savoy.each({ a: 1, b: 2, c: 3 }, function(cb, val, key, obj) {
 - The asynchronous function `fn` is called in *parallel* over each item in `collection`.
 - Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`.
 - The signature of the `cb` callback is `cb(err)`. If `err` is truthy, the `done` callback is called exactly once with the `err`.
+- When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err`.
+
+### eachSeries
+
+**savoy.eachSeries(collection, fn)** &mdash; *synchronous eachSeries*
+
+- Alias of `savoy.each`.
+
+**savoy.eachSeries(collection, fn, done)** &mdash; *asynchronous eachSeries*
+
+```js
+savoy.each({ a: 1, b: 2, c: 3 }, function(cb, val, key, obj) {
+  console.log(val, key, obj);
+  //=> 1, 'a', { a: 1, b: 2, c: 3 }
+  //=> 2, 'b', { a: 1, b: 2, c: 3 }
+  //=> 3, 'c', { a: 1, b: 2, c: 3 }
+  cb();
+}, function(err) {
+  console.log(err);
+  //=> null
+});
+```
+
+- The asynchronous function `fn` is called in *series* over each item in `collection`.
+- Invoke the `cb` callback in `fn` to signal the end of each iteration of `fn`.
+- The signature of the `cb` callback is `cb(err)`. If `err` is truthy, we stop iterating over the `collection`, and the `done` callback is called exactly once with the `err`.
 - When `fn` has completed execution over every item in the `collection`, the `done` callback is called exactly once with a falsy `err`.
 
 ### map
