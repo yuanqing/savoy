@@ -198,6 +198,10 @@
     return done ? asyncParallelEach(collection, fn, done) : syncParallelEach(collection, fn);
   };
 
+  exports.eachSeries = function(collection, fn, done) {
+    return done ? asyncSeriesEach(collection, fn, done) : syncParallelEach(collection, fn);
+  };
+
   exports.map = function(collection, fn, done) {
     return done ? asyncMap(collection, fn, done) : syncMap(collection, fn);
   };
