@@ -27,6 +27,7 @@
     "async",
     "asynchronous",
     "each",
+    "eachSeries",
     "filter",
     "flow",
     "fold",
