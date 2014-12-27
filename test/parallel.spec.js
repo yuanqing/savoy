@@ -94,7 +94,7 @@ describe('parallel', function() {
       ], done);
       jasmine.clock().tick(1000);
       expect(done.calls.count()).toBe(1);
-      expect(done.calls.argsFor(0)[0]).toEqual(2);
+      expect(done.calls.argsFor(0)[0]).toBe(2);
       jasmine.clock().uninstall();
     });
 
@@ -189,7 +189,7 @@ describe('parallel', function() {
       }, done);
       jasmine.clock().tick(1000);
       expect(done.calls.count()).toBe(1);
-      expect(done.calls.argsFor(0)[0]).toEqual(2);
+      expect(done.calls.argsFor(0)[0]).toBe(2);
       jasmine.clock().uninstall();
     });
 

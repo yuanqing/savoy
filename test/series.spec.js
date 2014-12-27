@@ -94,7 +94,7 @@ describe('series', function() {
       ], done);
       jasmine.clock().tick(1000);
       expect(done.calls.count()).toBe(1);
-      expect(done.calls.argsFor(0)[0]).toEqual(1);
+      expect(done.calls.argsFor(0)[0]).toBe(1);
       jasmine.clock().uninstall();
     });
 
@@ -189,7 +189,7 @@ describe('series', function() {
       }, done);
       jasmine.clock().tick(1000);
       expect(done.calls.count()).toBe(1);
-      expect(done.calls.argsFor(0)[0]).toEqual(1);
+      expect(done.calls.argsFor(0)[0]).toBe(1);
       jasmine.clock().uninstall();
     });
 

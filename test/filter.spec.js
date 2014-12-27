@@ -126,8 +126,8 @@ describe('filter', function() {
           }, duration[i]);
         }, done);
         jasmine.clock().tick(1000);
-        expect(done.calls.count()).toEqual(1);
-        expect(done.calls.argsFor(0)[0]).toEqual(2);
+        expect(done.calls.count()).toBe(1);
+        expect(done.calls.argsFor(0)[0]).toBe(2);
         expect(arr).toEqual([1, 2, 3]);
         jasmine.clock().uninstall();
       });
@@ -185,8 +185,8 @@ describe('filter', function() {
           }, duration[key]);
         }, done);
         jasmine.clock().tick(1000);
-        expect(done.calls.count()).toEqual(1);
-        expect(done.calls.argsFor(0)[0]).toEqual(2);
+        expect(done.calls.count()).toBe(1);
+        expect(done.calls.argsFor(0)[0]).toBe(2);
         expect(obj).toEqual({ a: 1, b: 2, c: 3 });
         jasmine.clock().uninstall();
       });
