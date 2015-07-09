@@ -3,8 +3,8 @@
 > Higher-order functions (synchronous and asynchronous each/eachSeries/map/filter/fold) and functions for flow control (parallel/series/waterfall) in under 1 KB.
 
 - [API](#api) is similar (not identical) to that of the [Async](https://github.com/caolan/async) library
-- 2.5 KB [minified](https://github.com/yuanqing/savoy/blob/master/savoy.min.js), or about 0.9 KB minified and gzipped
-- [Legible tests](https://github.com/yuanqing/savoy/blob/master/test), with [100% coverage](https://coveralls.io/r/yuanqing/savoy)
+- 2.5 KB [minified](savoy.min.js), or about 0.9 KB minified and gzipped
+- [Legible tests](test), with [100% coverage](https://coveralls.io/r/yuanqing/savoy)
 
 ## Why
 
@@ -304,19 +304,19 @@ savoy.waterfall([
 
 ## Installation
 
-Install via [npm](https://www.npmjs.org/):
+Install via [npm](https://npmjs.org/):
 
-```bash
+```
 $ npm i --save savoy
 ```
 
 Install via [bower](http://bower.io/):
 
-```bash
+```
 $ bower i --save yuanqing/savoy
 ```
 
-To use Savoy in the browser, include [the minified script](https://github.com/yuanqing/savoy/blob/master/savoy.min.js) in your HTML:
+To use Savoy in the browser, include [the minified script](savoy.min.js) in your HTML:
 
 ```html
 <body>
@@ -341,4 +341,4 @@ To use Savoy in the browser, include [the minified script](https://github.com/yu
 
 ## License
 
-[MIT license](https://github.com/yuanqing/savoy/blob/master/LICENSE)
+[MIT](LICENSE)
