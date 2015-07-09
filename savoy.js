@@ -1,4 +1,4 @@
-(function(exports) {
+(function(root) {
 
   var noop = function() {};
 
@@ -194,28 +194,30 @@
     });
   };
 
-  exports.each = function(collection, fn, done) {
+  var savoy = {};
+
+  savoy.each = function(collection, fn, done) {
     return done ? asyncParallelEach(collection, fn, done) : syncParallelEach(collection, fn);
   };
 
-  exports.eachSeries = function(collection, fn, done) {
+  savoy.eachSeries = function(collection, fn, done) {
     return done ? asyncSeriesEach(collection, fn, done) : syncParallelEach(collection, fn);
   };
 
-  exports.map = function(collection, fn, done) {
+  savoy.map = function(collection, fn, done) {
     return done ? asyncMap(collection, fn, done) : syncMap(collection, fn);
   };
 
-  exports.filter = function(collection, fn, done) {
+  savoy.filter = function(collection, fn, done) {
     return done ? asyncFilter(collection, fn, done) : syncFilter(collection, fn);
   };
 
-  exports.fold = function(collection, acc, fn, done) {
+  savoy.fold = function(collection, acc, fn, done) {
     return done ? asyncFold(collection, acc, fn, done) : syncFold(collection, acc, fn);
   };
 
-  exports.parallel = function(fns, done) {
-    exports.map(fns, function(cb, fn) {
+  savoy.parallel = function(fns, done) {
+    savoy.map(fns, function(cb, fn) {
       fn(function(err, val) {
         cb(err, val);
       });
@@ -224,7 +226,7 @@
     });
   };
 
-  exports.series = function(fns, done) {
+  savoy.series = function(fns, done) {
     var result = isArr(fns) ? [] : {};
     asyncSeriesEach(fns, function(cb, fn, key) {
       fn(function(err, val) {
@@ -236,7 +238,7 @@
     });
   };
 
-  exports.waterfall = function(fns, done) {
+  savoy.waterfall = function(fns, done) {
     var keys = isArr(fns) ? false : objKeys(fns);
     var len = (keys || fns).length;
     var i = -1;
@@ -257,4 +259,11 @@
     cb();
   };
 
-})(typeof exports == 'undefined' ? this.savoy : exports);
+  /* istanbul ignore else */
+  if (typeof module === 'object') {
+    module.exports = savoy;
+  } else {
+    root.savoy = savoy;
+  }
+
+})(this);
